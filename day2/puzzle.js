@@ -23,4 +23,25 @@ fs.readFile('input.txt',(err, fd) => {
         })
     });
     console.log(triples, doubles, triples * doubles);
+
+    const compareIDs = (box1, box2) => {
+        let differences = 0;
+        let indexesToRemove = [];
+        for (let x = 0; x < box1.length; x ++) {
+            if (box1[x] !== box2[x]) {
+                differences++;
+                indexesToRemove.push(x);
+            }
+        }
+        if (differences === 1) {
+            indexesToRemove.forEach(indexToRemove => box1.splice(indexToRemove, 1));
+            console.log(box1.toString().replace(/\,/g, ''));
+        }
+    }
+
+    boxIDs.forEach(box1 => {
+        boxIDs.forEach(box2 => {
+            compareIDs([...box1], [...box2]);
+        })
+    })
 });
