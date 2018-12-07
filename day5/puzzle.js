@@ -14,20 +14,10 @@ fs.readFile('input.txt',(err, fd) => {
         return false;
     }
 
-    const compareAndRemove = (letterA, letterB, letters, index) => {
-        if (matchingLetter(letterA, letterB)) {
-            letters.splice(index, 2);
-            index = 0;
-        } else {
-            index = index + 1;
-        }
-        return index;
-    }
-    let polymer = [...fd.toString()];
-    let index = 0;
+    const polymer = [...fd.toString()];
     let polyStack = [];
     //[...'dabAcCaCBAcCcaDA'];
-    const scanPolymer = (letters) => {
+    const scanPolymer = (letters, polyStack) => {
         letters.forEach(letter => {
             if (polyStack.length === 0) {
                 polyStack.push(letter);
@@ -37,7 +27,20 @@ fs.readFile('input.txt',(err, fd) => {
                 polyStack.push(letter);
             }
         });
+        return polyStack;
     };
-    scanPolymer(polymer);
-    console.log(polyStack.length);
+    const result = scanPolymer(polymer, polyStack);
+    console.log(result.length);
+
+    // part 2
+
+    const alphabet = [...'abcdefghijklmnopqrstuvwxyz'];
+    let alphaStore = {};
+    alphabet.forEach(letter => {
+        const polymerToBeImproved = [...fd.toString()].filter(polyLetter => polyLetter.toLowerCase() !== letter);
+        let stack = []
+        alphaStore[letter] = scanPolymer(polymerToBeImproved, stack).length;
+    });
+    const shortestPolymer = Object.keys(alphaStore).reduce((a, b) => alphaStore[a] < alphaStore[b] ? a : b);
+    console.log(shortestPolymer, alphaStore[shortestPolymer]);
 });
